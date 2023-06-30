@@ -5,20 +5,16 @@ use wasm_bindgen::JsValue;
 pub enum LibError {
     #[error("The voltage `{0}` is not valid. Cannot be NAN or zero.")]
     InvalidVoltage(f64),
-    #[error("invalid header (expected {expected:?}, found {found:?})")]
-    InvalidHeader {
-        expected: String,
-        found: String,
-    },
+    #[error("Failed to serialize")]
+    SerdeWasmBindgenError(#[from] serde_wasm_bindgen::Error),
     #[error("unknown data store error")]
     Unknown,
 }
 
 impl From<LibError> for JsValue {
-    fn from(val: LibError) -> Self {
-        val.to_string().into()
+    fn from(_: LibError) -> Self {
+        "encountered some error".into()
     }
 }
-
 
 pub type Result<T> = std::result::Result<T, LibError>;
